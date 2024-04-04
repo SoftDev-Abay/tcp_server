@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TCP Server UI</title>
+  </head>
+  <body>
+    <h2>Send Message to TCP Server</h2>
+    <form id="messageForm">
+      <input type="text" id="message" placeholder="Enter message" />
+      <button type="submit">Send</button>
+    </form>
+    <p id="response"></p>
+
+    <button onclick="retrieveMessages()">Retrieve Messages</button>
+    <p id="retrievedMessages"></p>
+
+    <script>
+      document.getElementById("messageForm").onsubmit = function (event) {
+        event.preventDefault();
+        var message = document.getElementById("message").value;
+        fetch("/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "message=" + encodeURIComponent(message),
+        })
+          .then((response) => response.text())
+          .then(
+            (text) => (document.getElementById("response").innerText = text)
+          )
+          .catch((error) => console.error("Error:", error));
+      };
+      function retrieveMessages() {
+        fetch("/retrieve-messages")
+          .then((response) => response.text())
+          .then(
+            (text) =>
+              (document.getElementById("retrievedMessages").innerText = text)
+          )
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>
